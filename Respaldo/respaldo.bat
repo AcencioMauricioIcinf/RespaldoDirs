@@ -7,7 +7,8 @@ rem Este sistema de respaldos será conjuntamente copiado a un servidor externo
 
 rem ---INDICACIONES---
 rem Indique aquí, en la variable base_dir, el directorio base en donde desea almacenar los respaldos realizados
-set base_dir="C:\"
+set base_dir="C:\Los respaldos"
+rem IMPORTANTE: Deje siempre las comillas
 rem Ahora, al ejecutar este archivo, Incluya como parámetros los nombres de las bases de datos y/o las RUTAS ABSOLUTAS de las carpetas que desea respaldar
 
 rem ---IMPORTANTE---
@@ -30,7 +31,7 @@ IF "%month-num:~0,1%"=="0" SET month-num=%month-num:~1%
 FOR /f "tokens=%month-num%" %%a in ("Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre") do set mo-name=%%a
 
 rem Se crea el árbol de directorios organizados según año y mes
-set path=%base_dir%\%year%\%mo-name%
+set path="%base_dir:~1,-1%\%year%\%mo-name%"
 mkdir %path%
 
 rem Se prepara el formato del nombre del directorio a copiar
@@ -42,6 +43,6 @@ FOR %%G IN (%*) DO (
     set source=%%G
     set name=%%~nG
     FOR %%i IN (!source!) DO IF EXIST %%~si\NUL set dirpath=%path%\copia_!name!_%formato% & mkdir !dirpath! & start xcopy !source! !dirpath! /s/c/y/e/i
-    IF NOT EXIST !source! %sqlc% -S DESKTOP-AJG6NBE\SQLEXPRESS -i resp.sql -v database="!name!" folder="%path%\"
+    IF NOT EXIST !source! %sqlc% -S DESKTOP-AJG6NBE\SQLEXPRESS -i resp.sql -v database="!name!" folder="%path:~1,-1%/"
 )
 pause
