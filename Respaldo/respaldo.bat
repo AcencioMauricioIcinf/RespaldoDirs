@@ -13,9 +13,20 @@ rem Ahora, al ejecutar este archivo, Incluya como parámetros los nombres de las 
 
 rem ---IMPORTANTE---
 rem Para el respaldo de bases de datos de SQL Server, se utiliza la utilidad sqlcmd
-rem Se REQUIERE utilizar la RUTA ABSOLUTA del ejecutable de sqlcmd (almacenada en la siguiente variable por conveniencia) para el buenfuncionamiento del script
-rem Si lo siguiente no coincide con la ubicación de sqlcmd en su máquina, cámbielo por la ruta correcta 
-set sqlc="C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE"
+rem Para el respaldo completo de archivos a un servidor externo, se utiliza la utilidad restic
+rem Se REQUIERE utilizar la RUTA ABSOLUTA de ambos ejecutables (almacenados en las siguientes variables por conveniencia) para el buen funcionamiento del script
+rem Si lo siguiente no coincide con la ubicaciones de los ejecutables en su máquina, cámbielos cada uno por la ruta correcta 
+rem --SQLCMD--
+set sqlcmd="C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE"
+rem --RESTIC--
+set restic=C:\Users\Mauro\scoop\shims\restic.exe
+
+rem ---PARÁMETROS DE CONEXIÓN RESTIC---
+rem A continuación, especifique los parámetros requeridos para realizar la conexión al servidor de respaldo:
+set user=fudea
+set pass=biePhie4pioTh4ie
+set IP=192.168.0.11
+set port=9000
 
 rem Utiliza script VB aparte para obtener la fecha del sistema en un formato predecible y consistente.
 rem Esto para evitar diferencias en formatos al llamar a la variable %date% de cmd en distintas configuraciones regionales.
@@ -43,6 +54,6 @@ FOR %%G IN (%*) DO (
     set source=%%G
     set name=%%~nG
     FOR %%i IN (!source!) DO IF EXIST %%~si\NUL set dirpath=%path%\copia_!name!_%formato% & mkdir !dirpath! & start xcopy !source! !dirpath! /s/c/y/e/i
-    IF NOT EXIST !source! %sqlc% -S DESKTOP-AJG6NBE\SQLEXPRESS -i resp.sql -v database="!name!" folder="%path:~1,-1%/"
+    IF NOT EXIST !source! %sqlcmd% -S DESKTOP-AJG6NBE\SQLEXPRESS -i resp.sql -v database="!name!" folder="%path:~1,-1%/"
 )
 pause
