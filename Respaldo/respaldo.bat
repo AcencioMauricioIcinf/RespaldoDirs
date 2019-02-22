@@ -27,6 +27,12 @@ set user=fudea
 set pass=biePhie4pioTh4ie
 set IP=192.168.0.11
 set port=9000
+rem si desea modificar otros parámetros de la conexión a restic, puede editar el comando desde aquí:
+set resticbckp=%restic% -r rest:http://%user%:%pass%@%IP%:%port%/ backup --hostname test --tag test %base_dir%
+
+
+rem ---EJECUCIÓN DEL SCRIPT---
+rem -!-!-!-NO EDITAR A PARTIR DE ESTE PUNTO-!-!-!-
 
 rem Utiliza script VB aparte para obtener la fecha del sistema en un formato predecible y consistente.
 rem Esto para evitar diferencias en formatos al llamar a la variable %date% de cmd en distintas configuraciones regionales.
@@ -56,4 +62,9 @@ FOR %%G IN (%*) DO (
     FOR %%i IN (!source!) DO IF EXIST %%~si\NUL set dirpath=%path%\copia_!name!_%formato% & mkdir !dirpath! & start xcopy !source! !dirpath! /s/c/y/e/i
     IF NOT EXIST !source! %sqlcmd% -S DESKTOP-AJG6NBE\SQLEXPRESS -i resp.sql -v database="!name!" folder="%path:~1,-1%/"
 )
+
+echo And now, the restic backup...
+rem (Traducción: Y ahora, el respaldo en restic)
+echo.
+%resticbckp%
 pause
